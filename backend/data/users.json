@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "id": "1736512637460",
+      "firstName": "Kudzaishe",
+      "lastName": "Mukungurutse",
+      "email": "kudziemuks@gmail.com",
+      "password": "$2a$12$zyeP3Hxz6jht9PLNVTSSB.BB23RxD6XCkHk4c44hsssZuQrbLJpCO",
+      "createdAt": "2025-01-10T12:37:17.460Z"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M400 100C250 100 150 200 150 300C150 400 250 500 400 500C550 500 650 400 650 300C650 200 550 100 400 100Z" fill="currentColor" opacity="0.1"/>
+  <path d="M300 200C200 200 150 250 150 300C150 350 200 400 300 400C400 400 450 350 450 300C450 250 400 200 300 200Z" fill="currentColor" opacity="0.1"/>
+  <path d="M500 250C450 250 400 300 400 350C400 400 450 450 500 450C550 450 600 400 600 350C600 300 550 250 500 250Z" fill="currentColor" opacity="0.1"/>
+</svg> 
