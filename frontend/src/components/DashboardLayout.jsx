@@ -23,6 +23,7 @@ import {
   Button,
   Breadcrumbs as MuiBreadcrumbs,
   Link,
+  useMediaQuery,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -126,6 +127,7 @@ const DashboardLayout = ({ children }) => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -153,6 +155,10 @@ const DashboardLayout = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   useEffect(() => {
@@ -381,7 +387,7 @@ const DashboardLayout = ({ children }) => {
       >
         <MuiBreadcrumbs 
           separator={<NavigateNextIcon fontSize="small" />}
-          sx={{ mb: 3 }}
+          sx={{ mb: 0.5, px: 1 }}
         >
           <Link 
             color="inherit" 
@@ -414,10 +420,20 @@ const DashboardLayout = ({ children }) => {
       component="main"
       sx={{
         flexGrow: 1,
-        p: 3,
-        width: { sm: `calc(100% - ${open ? 260 : theme.spacing(7)}px)` },
-        ml: { sm: open ? `${260}px` : `${theme.spacing(7)}px` },
-        transition: theme.transitions.create(['width', 'margin'], {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        position: 'relative',
+        marginLeft: {
+          xs: 0,
+          md: open ? '240px' : '64px'
+        },
+        width: {
+          xs: '100%',
+          sm: '100%',
+        },
+        flex: 1,
+        transition: theme.transitions.create('margin-left', {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
         }),
@@ -426,7 +442,13 @@ const DashboardLayout = ({ children }) => {
       <Toolbar />
       <AnimatePresence mode="wait">
         <PageTransition>
-          <Box sx={{ p: 3 }}>
+          <Box 
+            sx={{ 
+              flex: 1,
+              overflow: 'auto',
+              p: 0,
+            }}
+          >
             <BreadcrumbsNav />
             {children}
           </Box>
@@ -455,18 +477,40 @@ const DashboardLayout = ({ children }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton
               color="inherit"
+              onClick={handleMobileMenuToggle}
+              sx={{ 
+                display: { xs: 'block', md: 'none' },
+                mr: 1 
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <IconButton
+              color="inherit"
               onClick={handleDrawerToggle}
-              edge="start"
+              sx={{ 
+                display: { xs: 'none', md: 'block' }
+              }}
             >
               {open ? <ChevronLeft /> : <MenuIcon />}
             </IconButton>
-            <Typography variant="h6" noWrap sx={{ ml: 2 }}>
+            <Typography 
+              variant="h6" 
+              noWrap 
+              sx={{ 
+                ml: 2,
+                display: { xs: 'none', sm: 'block' }
+              }}
+            >
               Admin Dashboard
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {/* Search Bar */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: { xs: 1, sm: 2 }
+          }}>
             <Box
               sx={{
                 position: 'relative',
@@ -475,8 +519,8 @@ const DashboardLayout = ({ children }) => {
                 '&:hover': {
                   backgroundColor: alpha(theme.palette.common.white, 0.25),
                 },
-                width: '300px',
-                mr: 2,
+                width: { xs: '100%', sm: '300px' },
+                display: { xs: 'none', sm: 'block' }
               }}
             >
               <Box
@@ -504,14 +548,24 @@ const DashboardLayout = ({ children }) => {
               />
             </Box>
 
-            {/* Notifications */}
-            <IconButton color="inherit" onClick={handleNotificationMenu}>
+            <IconButton 
+              color="inherit" 
+              sx={{ display: { xs: 'block', sm: 'none' } }}
+              onClick={() => {/* Handle mobile search */}}
+            >
+              <Search />
+            </IconButton>
+
+            <IconButton 
+              color="inherit" 
+              onClick={handleNotificationMenu}
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+            >
               <Badge badgeContent={3} color="error">
                 <Notifications />
               </Badge>
             </IconButton>
 
-            {/* Profile */}
             <Box
               sx={{
                 display: 'flex',
@@ -523,8 +577,8 @@ const DashboardLayout = ({ children }) => {
             >
               <Avatar
                 sx={{
-                  width: 35,
-                  height: 35,
+                  width: { xs: 32, sm: 35 },
+                  height: { xs: 32, sm: 35 },
                   bgcolor: theme.palette.primary.main,
                 }}
               >
@@ -537,21 +591,30 @@ const DashboardLayout = ({ children }) => {
 
       {/* Sidebar */}
       <Drawer
-        variant="permanent"
-        open={open}
+        variant={useMediaQuery(theme.breakpoints.up('md')) ? 'permanent' : 'temporary'}
+        open={useMediaQuery(theme.breakpoints.up('md')) ? open : mobileOpen}
+        onClose={handleMobileMenuToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
         sx={{
-          width: open ? 260 : theme.spacing(7),
-          transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
           '& .MuiDrawer-paper': {
-            width: open ? 260 : theme.spacing(7),
+            position: 'fixed',
+            width: {
+              xs: '240px',
+              md: open ? '240px' : '64px'
+            },
+            height: '100%',
             transition: theme.transitions.create('width', {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
             overflowX: 'hidden',
+            borderRight: 'none',
+            boxShadow: {
+              xs: '2px 0 8px rgba(0,0,0,0.15)',
+              md: 'none'
+            },
           },
         }}
       >
